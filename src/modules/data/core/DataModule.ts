@@ -78,6 +78,9 @@ export class DataModule implements DataModuleInterface {
     }
 
     try {
+      // 记录查询开始时间
+      const startTime = performance.now();
+
       // 构建排除ID的SQL片段
       const excludeClause =
         excludeIds.length > 0
@@ -89,25 +92,40 @@ export class DataModule implements DataModuleInterface {
         SELECT sentence_id, poetry_id, poetry_index, content 
         FROM sentence 
         WHERE content LIKE '%${partialContent}%' ${excludeClause}
+        ORDER BY RANDOM()
         LIMIT ${limit}
       `;
 
+      console.group('查询匹配诗句')
+      console.log(`查询条件：content=${partialContent}, excludeIds=${excludeIds}, limit=${limit}`);
+
       const results = this.db.exec(query);
 
+      // 记录查询结束时间并计算用时
+      const endTime = performance.now();
+      const executionTime = endTime - startTime;
+      console.log(`查询用时: ${executionTime.toFixed(2)}ms`);
+
       if (results.length === 0 || results[0].values.length === 0) {
+        console.log("查询结果：无");
         return [];
       }
 
       // 转换查询结果为Sentence对象数组
-      return results[0].values.map((row) => ({
+      const sentences = results[0].values.map((row) => ({
         id: row[0] as number,
         poetryId: row[1] as number,
         poetryIndex: row[2] as number,
         content: row[3] as string,
       }));
+      console.log("查询结果:", sentences);
+
+      return sentences;
     } catch (error) {
-      console.error("查询诗句失败:", error);
+      console.error("查询失败:", error);
       return [];
+    } finally {
+      console.groupEnd()
     }
   }
 

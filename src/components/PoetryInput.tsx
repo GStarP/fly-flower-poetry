@@ -24,12 +24,12 @@ export default function PoetryInput({
   const [isValid, setIsValid] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // 当组件挂载或禁用状态改变时，聚焦输入框
+  // 当组件挂载时，聚焦输入框
   useEffect(() => {
-    if (!disabled && inputRef.current) {
+    if (inputRef.current) {
       inputRef.current.focus();
     }
-  }, [disabled]);
+  }, []);
 
   // 验证输入是否包含限定字
   useEffect(() => {
@@ -63,7 +63,6 @@ export default function PoetryInput({
         value={input}
         onChange={handleInputChange}
         placeholder={placeholder}
-        disabled={disabled}
         className={isValid ? "valid" : ""}
       />
       <button type="submit" disabled={!isValid || disabled}>
@@ -99,10 +98,7 @@ export default function PoetryInput({
           box-shadow: 0 0 0 2px rgba(120, 146, 98, 0.2);
         }
 
-        input:disabled {
-          background-color: rgba(176, 171, 169, 0.1);
-          cursor: not-allowed;
-        }
+
 
         button {
           padding: 12px 24px;

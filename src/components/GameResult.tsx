@@ -3,13 +3,16 @@
  */
 
 import { useState, useEffect } from "react";
-import type { GameResult as GameResultType } from "../modules/game";
+import { GAME_CONSTANTS, type GameResult as GameResultType, type GameState } from "../modules/game";
+import type { Sentence } from "../modules/data";
 import { dataModule } from "../modules/data";
+import { openPoetrySearch } from "../utils/poetry";
 
 interface GameResultProps {
   result: GameResultType;
   onRestart: () => void;
   limitChar?: string;
+  gameState?: GameState;
 }
 
 /**
@@ -17,30 +20,66 @@ interface GameResultProps {
  */
 export default function GameResult({
   result,
-  onRestart,
   limitChar,
+  gameState,
 }: GameResultProps) {
+  const [currentRecommendedSentences, setCurrentRecommendedSentences] = useState<Sentence[]>(result.recommendedSentences || []);
+  const [isLoadingNewSentences, setIsLoadingNewSentences] = useState(false);
   // 获取结果标题
   const getResultTitle = () => {
     return result.winner === "player"
-      ? "会当凌绝顶，一览众山小"
-      : "胜败乃兵家常事，大侠请重新来过";
+      ? GAME_CONSTANTS.RESULT_TEXT.WIN
+      : GAME_CONSTANTS.RESULT_TEXT.LOSE;
+  };
+
+  // 换一批推荐诗句
+  const handleRefreshSentences = async () => {
+    if (!limitChar || isLoadingNewSentences) return;
+    
+    setIsLoadingNewSentences(true);
+    try {
+      // 获取已使用的诗句ID，包括当前显示的推荐诗句
+      const usedIds = [...(gameState?.usedSentences?.map(s => s.id) || []), ...currentRecommendedSentences.map(s => s.id)];
+      
+      // 查询新的推荐诗句
+      const newSentences = await dataModule.queryPoetrySentences(
+        limitChar,
+        usedIds,
+        3
+      );
+      
+      setCurrentRecommendedSentences(newSentences);
+    } catch (error) {
+      console.error("获取新推荐诗句失败:", error);
+    } finally {
+      setIsLoadingNewSentences(false);
+    }
   };
 
   // 渲染推荐诗句
   const renderRecommendedSentences = () => {
     if (
-      !result.recommendedSentences ||
-      result.recommendedSentences.length === 0
+      !currentRecommendedSentences ||
+      currentRecommendedSentences.length === 0
     ) {
       return null;
     }
 
     return (
       <div className="recommended-sentences">
+        <div className="sentences-header">
+          <span className="sentences-title">推荐诗句</span>
+          <button 
+            className="refresh-button"
+            onClick={handleRefreshSentences}
+            disabled={isLoadingNewSentences}
+          >
+            {isLoadingNewSentences ? "加载中..." : "换一批"}
+          </button>
+        </div>
         <div className="sentences-list">
-          {result.recommendedSentences.map((sentence, index) => (
-            <RecommendedSentenceItem key={index} sentence={sentence} />
+          {currentRecommendedSentences.map((sentence, index) => (
+            <RecommendedSentenceItem key={`${sentence.id}-${index}`} sentence={sentence} />
           ))}
         </div>
       </div>
@@ -90,8 +129,11 @@ export default function GameResult({
             : sentence.content}
         </div>
         {poetry && (
-          <div className="sentence-source">
-            {poetry.title} · {poetry.author}
+          <div 
+            className="sentence-source"
+            onClick={() => openPoetrySearch(poetry.title, poetry.author)}
+          >
+            《{poetry.title}》 {poetry.author}
           </div>
         )}
       </div>
@@ -149,6 +191,41 @@ export default function GameResult({
           margin-bottom: 20px;
         }
 
+        .sentences-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 12px;
+        }
+
+        .sentences-title {
+          font-size: 16px;
+          font-weight: 500;
+          color: #333;
+        }
+
+        .refresh-button {
+          background-color: transparent;
+          color: #333;
+          border: 1px solid #333;
+          border-radius: 4px;
+          padding: 6px 12px;
+          font-size: 14px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .refresh-button:hover:not(:disabled) {
+          background-color: #333;
+          color: white;
+        }
+
+        .refresh-button:disabled {
+          border-color: #ccc;
+          color: #ccc;
+          cursor: not-allowed;
+        }
+
         .sentences-list {
           display: flex;
           flex-direction: column;
@@ -172,6 +249,13 @@ export default function GameResult({
         .sentence-source {
           font-size: 12px;
           color: #777;
+          cursor: pointer;
+          transition: color 0.2s ease;
+        }
+
+        .sentence-source:hover {
+          color: #333;
+          text-decoration: underline;
         }
 
         .highlight {

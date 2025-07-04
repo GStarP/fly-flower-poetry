@@ -76,7 +76,7 @@ export class GameModule implements GameModuleInterface {
     this.dataModule = dataModule;
     this.settings = {
       difficulty: "medium",
-      timeLimit: 15,
+      timeLimit: 20,
     };
     this.gameState = {
       status: GAME_CONSTANTS.STATUS.READY,
@@ -148,7 +148,7 @@ export class GameModule implements GameModuleInterface {
       if (sentences.length === 0) {
         const result = this.endGame(
           "player",
-          GAME_CONSTANTS.ERROR_MESSAGES.NO_AVAILABLE_SENTENCES
+          GAME_CONSTANTS.ERROR_MESSAGES.NO_AVAILABLE_SENTENCE
         );
         return { success: false, message: result.reason, gameOver: true };
       }
@@ -161,7 +161,11 @@ export class GameModule implements GameModuleInterface {
       this.gameState.currentTurn = "player";
       this.gameState.remainingTime = this.settings.timeLimit;
 
-      // 重新启动计时器
+
+      // 机器人根据难度主动等待一定的时间
+      await this.waitByDifficulty();
+
+      // 进入玩家回合，启动计时器
       this.startTimer();
 
       return { success: true, sentence };
@@ -191,27 +195,20 @@ export class GameModule implements GameModuleInterface {
       };
     }
 
-    // 清除计时器
-    this.clearTimer();
-
     // 验证输入是否包含限制字符
     if (!input.includes(this.gameState.limitChar)) {
-      // 重新启动计时器，因为玩家回合继续
-      this.startTimer();
       return {
         success: false,
-        message: `${GAME_CONSTANTS.ERROR_MESSAGES.NOT_INCLUDE_LIMIT_CHAR}"${this.gameState.limitChar}"`,
+        message: `${GAME_CONSTANTS.ERROR_MESSAGES.NOT_INCLUDE_LIMIT_CHAR}：${this.gameState.limitChar}`,
       };
     }
 
     // 验证输入是否已存在于使用过的句子中
     if (
       this.gameState.usedSentences.some(
-        (sentence) => sentence.content === input
+        (sentence) => sentence.content.includes(input)
       )
     ) {
-      // 重新启动计时器，因为玩家回合继续
-      this.startTimer();
       return {
         success: false,
         message: GAME_CONSTANTS.ERROR_MESSAGES.SENTENCE_ALREADY_USED,
@@ -240,8 +237,6 @@ export class GameModule implements GameModuleInterface {
       }
       // 匹配不到任何诗句，认为用户输入无效
       else if (sentences.length === 0) {
-        // 重新启动计时器，因为玩家回合继续
-        this.startTimer();
         return {
           success: false,
           message: GAME_CONSTANTS.ERROR_MESSAGES.NO_MATCHING_SENTENCE,
@@ -249,8 +244,6 @@ export class GameModule implements GameModuleInterface {
       }
       // 匹配到多句诗句，要求用户输入更具体的诗句
       else {
-        // 重新启动计时器，因为玩家回合继续
-        this.startTimer();
         return {
           success: false,
           message: GAME_CONSTANTS.ERROR_MESSAGES.MULTIPLE_MATCHING_SENTENCES,
@@ -258,8 +251,6 @@ export class GameModule implements GameModuleInterface {
       }
     } catch (error) {
       console.error("玩家回合出错:", error);
-      // 重新启动计时器，因为玩家回合继续
-      this.startTimer();
       return {
         success: false,
         message: GAME_CONSTANTS.ERROR_MESSAGES.VALIDATION_ERROR,
@@ -393,6 +384,32 @@ export class GameModule implements GameModuleInterface {
 
     // 暂时忽视 难度设置，直接采用第一句
     return sentences[0];
+  }
+
+  /**
+   * 根据难度等待一定时间
+   * @private
+   */
+  private async waitByDifficulty(): Promise<void> {
+    let waitTime = 0;
+    
+    switch (this.settings.difficulty) {
+      case "easy":
+        waitTime = 5000; // 简单难度等待5秒
+        break;
+      case "medium":
+        waitTime = 3000; // 中等难度等待3秒
+        break;
+      case "hard":
+        waitTime = 1000; // 困难难度等待1秒
+        break;
+      default:
+        waitTime = 5000; // 默认等待5秒
+    }
+    
+    return new Promise(resolve => {
+      setTimeout(resolve, waitTime);
+    });
   }
 
   /**

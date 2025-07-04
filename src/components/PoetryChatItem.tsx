@@ -4,6 +4,7 @@
 
 import { useState, useEffect } from "react";
 import type { Sentence, Poetry } from "../modules/data";
+import { openPoetrySearch } from '../utils/poetry';
 import { dataModule } from "../modules/data";
 
 interface PoetryChatItemProps {
@@ -25,6 +26,11 @@ export default function PoetryChatItem({
 
   // 获取诗词详情
   useEffect(() => {
+    // 如果是加载状态，不需要获取诗词详情
+    if (sentence.poetryId === -1) {
+      return;
+    }
+
     const fetchPoetry = async () => {
       try {
         setLoading(true);
@@ -57,8 +63,10 @@ export default function PoetryChatItem({
     );
   };
 
+  const isLoading = sentence.poetryId === -1;
+
   return (
-    <div className={`poetry-chat-item ${type}`}>
+    <div className={`poetry-chat-item ${type} ${isLoading ? 'loading' : ''}`}>
       <div className="content">
         {highlightChar
           ? highlightContent(sentence.content, highlightChar)
@@ -66,8 +74,11 @@ export default function PoetryChatItem({
       </div>
 
       {poetry && (
-        <div className="source">
-          {poetry.title} · {poetry.author}
+        <div 
+          className="source"
+          onClick={() => openPoetrySearch(poetry.title, poetry.author)}
+        >
+          《{poetry.title}》 {poetry.author}
         </div>
       )}
 
@@ -123,11 +134,31 @@ export default function PoetryChatItem({
         .source {
           font-size: 12px;
           opacity: 0.8;
+          cursor: pointer;
+          transition: opacity 0.2s ease;
+        }
+
+        .source:hover {
+          opacity: 1;
+          text-decoration: underline;
         }
 
         :global(.highlight__chat) {
           color: #333;
           font-weight: 500;
+        }
+
+        .poetry-chat-item.loading .content {
+          animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+          0%, 100% {
+            opacity: 0.6;
+          }
+          50% {
+            opacity: 1;
+          }
         }
 
         @keyframes fadeIn {

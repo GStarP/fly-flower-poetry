@@ -9,6 +9,7 @@ import PoetryChatItem from "./PoetryChatItem";
 interface PoetryChatListProps {
   sentences: Sentence[];
   limitChar: string;
+  gameStatus: string;
 }
 
 /**
@@ -17,6 +18,7 @@ interface PoetryChatListProps {
 export default function PoetryChatList({
   sentences,
   limitChar,
+  gameStatus,
 }: PoetryChatListProps) {
   const listRef = useRef<HTMLDivElement>(null);
 
@@ -29,20 +31,35 @@ export default function PoetryChatList({
 
   return (
     <div className="poetry-chat-list" ref={listRef}>
-      {sentences.length === 0 ? (
+      {gameStatus !== "playing" && sentences.length === 0 ? (
         <div className="empty-state">
           <p>游戏开始后，诗句将显示在这里</p>
           <p>每句诗都必须包含限定字「{limitChar || "?"}」</p>
         </div>
       ) : (
-        sentences.map((sentence, index) => (
-          <PoetryChatItem
-            key={`${sentence.id}-${index}`}
-            sentence={sentence}
-            type={index % 2 === 0 ? "robot" : "player"}
-            highlightChar={limitChar}
-          />
-        ))
+        <>
+          {sentences.map((sentence, index) => (
+            <PoetryChatItem
+              key={`${sentence.id}-${index}`}
+              sentence={sentence}
+              type={index % 2 === 0 ? "robot" : "player"}
+              highlightChar={limitChar}
+            />
+          ))}
+          {gameStatus === "playing" && (
+            <PoetryChatItem
+              key="loading"
+              sentence={{
+                id: -1,
+                content: "待出句……",
+                poetryId: -1,
+                poetryIndex: -1,
+              }}
+              type={sentences.length % 2 === 0 ? "robot" : "player"}
+              highlightChar={limitChar}
+            />
+          )}
+        </>
       )}
 
       <style jsx>{`
