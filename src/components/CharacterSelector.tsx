@@ -133,7 +133,7 @@ export default function CharacterSelector({
         .character-selector {
           background-color: #F7F4ED;
           border-radius: 8px;
-          padding: 30px;
+          padding: 25px 20px;
           width: 90%;
           max-width: 400px;
           box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
@@ -145,9 +145,9 @@ export default function CharacterSelector({
           text-align: center;
           color: #1D1E20;
           margin-top: 0;
-          margin-bottom: 20px;
+          margin-bottom: 15px;
           font-weight: bold;
-          font-size: 24px;
+          font-size: 22px;
         }
         
         .input-section {
@@ -254,10 +254,87 @@ export default function CharacterSelector({
         }
         
         @media (max-width: 480px) {
+          .character-selector {
+            padding: 20px 15px;
+            width: 90%;
+            margin: 0 auto;
+          }
+          
+          h2 {
+            font-size: 20px;
+            margin-bottom: 12px;
+          }
+          
+          .input-section {
+            margin-bottom: 15px;
+          }
+          
+          input {
+            padding: 10px 12px;
+            font-size: 16px;
+          }
+          
+          .submit-btn {
+            padding: 10px 15px;
+            font-size: 14px;
+          }
+          
+          .divider {
+            margin: 15px 0;
+          }
+          
+          .divider span {
+            font-size: 12px;
+          }
+          
           .char-btn {
             width: 60px;
             height: 60px;
             font-size: 28px;
+          }
+          
+          .refresh-btn {
+            padding: 8px 16px;
+            font-size: 14px;
+          }
+        }
+        
+        @media (max-width: 375px) {
+          .character-selector {
+            padding: 15px 10px;
+            width: 85%;
+            margin: 0 auto;
+          }
+          
+          h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+          }
+          
+          .char-btn {
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+          }
+          
+          .input-section {
+            margin-bottom: 12px;
+          }
+          
+          input {
+            padding: 8px 10px;
+            font-size: 14px;
+            margin-right: 5px;
+          }
+          
+          .submit-btn {
+            padding: 8px 12px;
+            font-size: 13px;
+          }
+          
+          .refresh-btn {
+            padding: 6px 12px;
+            font-size: 13px;
           }
         }
       `}</style>

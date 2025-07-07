@@ -73,6 +73,7 @@ export default function PoetryInput({
         .poetry-input {
           display: flex;
           width: 100%;
+          box-sizing: border-box;
         }
 
         input {
@@ -98,8 +99,6 @@ export default function PoetryInput({
           box-shadow: 0 0 0 2px rgba(120, 146, 98, 0.2);
         }
 
-
-
         button {
           padding: 12px 24px;
           background-color: #c14c3a;
@@ -119,6 +118,33 @@ export default function PoetryInput({
         button:disabled {
           background-color: #b0aba9;
           cursor: not-allowed;
+        }
+        
+        /* 移动端适配 */
+        @media (max-width: 480px) {
+          input {
+            padding: 10px 10px;
+            font-size: 15px;
+          }
+          
+          button {
+            padding: 10px 12px;
+            font-size: 15px;
+            min-width: 50px;
+          }
+        }
+        
+        @media (max-width: 375px) {
+          input {
+            padding: 8px 8px;
+            font-size: 14px;
+          }
+          
+          button {
+            padding: 8px 8px;
+            font-size: 14px;
+            min-width: 40px;
+          }
         }
       `}</style>
     </form>

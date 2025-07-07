@@ -155,6 +155,8 @@ export default function GameResult({
           padding-top: 20px;
           border-top: 1px dashed rgba(176, 171, 169, 0.5);
           animation: fadeIn 0.5s ease-out;
+          width: 100%;
+          box-sizing: border-box;
         }
 
         .result-content {
@@ -163,6 +165,10 @@ export default function GameResult({
           padding: 20px;
           box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
           border: 1px solid rgba(176, 171, 169, 0.3);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
+          width: 100%;
+          box-sizing: border-box;
         }
 
         .result-title {
@@ -267,6 +273,101 @@ export default function GameResult({
 
         /* 重新开始按钮悬停样式已移至底部 */
 
+        /* 移动端适配 */
+        @media (max-width: 480px) {
+          .game-result {
+            margin-top: 15px;
+            padding-top: 15px;
+          }
+          
+          .result-content {
+            padding: 12px 10px;
+          }
+          
+          .result-title {
+            font-size: 20px;
+            margin-bottom: 8px;
+          }
+          
+          .result-reason {
+            font-size: 14px;
+            margin-bottom: 15px;
+          }
+          
+          .sentences-title {
+            font-size: 15px;
+          }
+          
+          .refresh-button {
+            padding: 5px 8px;
+            font-size: 13px;
+          }
+          
+          .sentences-list {
+            gap: 10px;
+          }
+          
+          .sentence-item {
+            padding: 10px;
+          }
+          
+          .sentence-content {
+            font-size: 16px;
+            margin-bottom: 4px;
+          }
+        }
+        
+        @media (max-width: 375px) {
+          .game-result {
+            margin-top: 12px;
+            padding-top: 12px;
+          }
+          
+          .result-content {
+            padding: 12px 10px;
+          }
+          
+          .result-title {
+            font-size: 18px;
+            margin-bottom: 6px;
+          }
+          
+          .result-reason {
+            font-size: 13px;
+            margin-bottom: 12px;
+          }
+          
+          .sentences-header {
+            margin-bottom: 8px;
+          }
+          
+          .sentences-title {
+            font-size: 14px;
+          }
+          
+          .refresh-button {
+            padding: 4px 8px;
+            font-size: 12px;
+          }
+          
+          .sentences-list {
+            gap: 8px;
+          }
+          
+          .sentence-item {
+            padding: 8px 10px;
+          }
+          
+          .sentence-content {
+            font-size: 15px;
+            margin-bottom: 3px;
+          }
+          
+          .sentence-source {
+            font-size: 11px;
+          }
+        }
+        
         @keyframes fadeIn {
           from {
             opacity: 0;

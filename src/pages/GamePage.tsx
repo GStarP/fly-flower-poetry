@@ -188,7 +188,7 @@ export default function GamePage() {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 20px;
+          padding: 15px;
           border-bottom: 1px solid rgba(176, 171, 169, 0.5);
           position: relative;
           flex-shrink: 0; /* 防止header被压缩 */
@@ -197,7 +197,8 @@ export default function GamePage() {
         .header-left {
           display: flex;
           align-items: center;
-          gap: 12px;
+          gap: 10px;
+          max-width: 40%;
         }
 
         .header-right {
@@ -242,11 +243,15 @@ export default function GamePage() {
           color: #1d1e20;
           font-weight: bold;
           margin: 0;
+          font-size: 24px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
 
         main {
           flex: 1;
-          padding: 20px;
+          padding: 15px 10px;
           display: flex;
           flex-direction: column;
           height: 0; /* 配合flex: 1使其占据剩余空间 */
@@ -259,12 +264,12 @@ export default function GamePage() {
           flex-direction: column;
           overflow-y: auto; /* 使内容可滚动 */
           height: 100%; /* 占满main的高度 */
+          padding-right: 5px; /* 为滚动条预留空间 */
         }
 
         /* 自定义滚动条 */
         .scrollable-content::-webkit-scrollbar {
-          width: 6px;
-          display: none;
+          width: 4px;
         }
 
         .scrollable-content::-webkit-scrollbar-track {
@@ -277,7 +282,7 @@ export default function GamePage() {
         }
 
         footer {
-          padding: 20px;
+          padding: 15px 10px;
           border-top: 1px solid rgba(176, 171, 169, 0.5);
           flex-shrink: 0; /* 防止footer被压缩 */
         }
@@ -298,6 +303,76 @@ export default function GamePage() {
         
         footer .restart-btn:hover {
           background-color: #a13c2a;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 375px) {
+          header {
+            padding: 8px;
+          }
+          
+          h1 {
+            font-size: 18px;
+          }
+          
+          .github-icon {
+            width: 18px;
+            height: 18px;
+          }
+          
+          .limit-char {
+            font-size: 22px;
+          }
+          
+          main {
+            padding: 8px 5px;
+            width: 100%;
+            box-sizing: border-box;
+          }
+          
+          footer {
+            padding: 8px 5px;
+            width: 100%;
+            box-sizing: border-box;
+          }
+          
+          footer .restart-btn {
+            padding: 8px;
+            font-size: 14px;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          header {
+            padding: 10px;
+          }
+          
+          h1 {
+            font-size: 20px;
+          }
+          
+          .github-icon {
+            width: 20px;
+            height: 20px;
+          }
+          
+          main, footer {
+            width: 100%;
+            box-sizing: border-box;
+            padding-left: 8px;
+            padding-right: 8px;
+          }
+          
+          .scrollable-content::-webkit-scrollbar {
+            width: 3px;
+          }
+        }
+
+        @media (min-width: 481px) and (max-width: 767px) {
+          main, footer {
+            width: 100%;
+            padding: 15px;
+          }
         }
 
         @media (min-width: 768px) {

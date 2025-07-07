@@ -89,6 +89,8 @@ export default function PoetryChatItem({
           border-radius: 8px;
           position: relative;
           animation: fadeIn 0.3s ease-out;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .poetry-chat-item.robot {
@@ -172,6 +174,53 @@ export default function PoetryChatItem({
           }
         }
 
+        @media (max-width: 375px) {
+          .poetry-chat-item {
+            max-width: 90%;
+            padding: 8px 12px;
+          }
+          
+          .poetry-chat-item.robot::before,
+          .poetry-chat-item.player::before {
+            bottom: 8px;
+          }
+          
+          .content {
+            font-size: 16px;
+            line-height: 1.4;
+            margin-bottom: 2px;
+          }
+          
+          .source {
+            font-size: 10px;
+          }
+        }
+        
+        @media (min-width: 376px) and (max-width: 480px) {
+          .poetry-chat-item {
+            max-width: 88%;
+            padding: 10px 14px;
+          }
+          
+          .content {
+            font-size: 16px;
+          }
+          
+          .source {
+            font-size: 11px;
+          }
+        }
+        
+        @media (min-width: 481px) and (max-width: 767px) {
+          .poetry-chat-item {
+            max-width: 80%;
+          }
+          
+          .content {
+            font-size: 17px;
+          }
+        }
+        
         @media (min-width: 768px) {
           .poetry-chat-item {
             max-width: 70%;

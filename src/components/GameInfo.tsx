@@ -123,6 +123,25 @@ export default function GameInfo({ gameState }: GameInfoProps) {
             font-size: 14px;
           }
         }
+        
+        @media (max-width: 375px) {
+          .game-info {
+            gap: 8px;
+          }
+          
+          .info-item {
+            min-width: 40px;
+          }
+          
+          .label {
+            font-size: 10px;
+            margin-bottom: 2px;
+          }
+          
+          .value {
+            font-size: 13px;
+          }
+        }
       `}</style>
     </div>
   );

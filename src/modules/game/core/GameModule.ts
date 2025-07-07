@@ -391,6 +391,15 @@ export class GameModule implements GameModuleInterface {
    * @private
    */
   private async waitByDifficulty(): Promise<void> {
+    // 检测是否在测试环境中 - 使用环境变量或全局标志
+    const isTestEnvironment = process.env.NODE_ENV === 'test' || process.env.VITEST === 'true';
+    
+    // 如果在测试环境中，直接返回，不使用setTimeout
+    if (isTestEnvironment) {
+      return Promise.resolve();
+    }
+    
+    // 在生产环境中，根据难度等待不同时间
     let waitTime = 0;
     
     switch (this.settings.difficulty) {

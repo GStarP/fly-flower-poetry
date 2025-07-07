@@ -83,6 +83,31 @@ export default function PoetryChatList({
           line-height: 1.6;
         }
 
+        /* 移动端适配 */
+        @media (max-width: 480px) {
+          .poetry-chat-list {
+            padding: 8px;
+            gap: 12px;
+          }
+          
+          .empty-state {
+            font-size: 14px;
+            line-height: 1.5;
+          }
+        }
+        
+        @media (max-width: 375px) {
+          .poetry-chat-list {
+            padding: 5px;
+            gap: 10px;
+          }
+          
+          .empty-state {
+            font-size: 13px;
+            line-height: 1.4;
+          }
+        }
+
         /* 滚动条样式已移至GamePage.tsx */
       `}</style>
     </div>
